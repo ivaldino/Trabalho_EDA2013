@@ -1,12 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-struct _cidade{
-	unsigned long code;
-	char estado[3];
-}
-
 menu(){
+	//menu de Opcoes
 	printf("\nMenu de op%c%ces:\n",135, 228);
 	printf("1) Cadastrar os dados de rendimento de uma cidade\n");
 	printf("2) Consultar os dados de uma cidade\n");
@@ -17,9 +13,6 @@ menu(){
 }
 
 int main(){
-// To do!
 menu();
-//system("pause>NULL");
 getchar();
-//return 0;
 }
