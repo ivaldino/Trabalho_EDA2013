@@ -16,7 +16,7 @@ typedef struct _rendimento{
 
 typedef struct _cidade{
 	/* Estrutura de dados que define uma cidade.*/
-	char* nome; 
+	char nome[50]; 
 	/* ponteiro p/ char onde será armazenado o nome da cidade. //Alocar dinamicamente o tamanho da string\\ Verificar se ñ comprometerá leitura em arquivo*/
 	char estado[3];/*String de 2 caracteres(+'\0') que Armazena sigla do Estado*/
 	Rendimento rende;//Variável do rendimento;
