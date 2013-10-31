@@ -134,6 +134,7 @@ typedef struct _arvore{
 	void excluir_s(int,int,Cidade*);
 	void lista(int,const Cidade*);
 	void procura(int,Cidade*);
+	int valida_Rendimento(Rendimento r);
 
 //------------------------------------------------------------------------------------------------------------------------------------------------
 enum{
@@ -141,6 +142,10 @@ enum{
 };
 
 //*********************************************************************************************************************************************
+
+void limpa(){
+	system("clear || cls");
+}
 
 void escrever_linha(void){
 	char linha_l[]={205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,
@@ -161,11 +166,18 @@ void fecha_caixa(int i){
 	}
 	else putchar('\n');
 }
+//*********************************************************************************************************************************************
 int valida_Rendimento(Rendimento r){
 	return (r.total!= r._1SalMin +r._1a2SalMin +r._2a3SalMin +r._3a5SalMin 
 		+r._5a10SalMin +r._10a20SalMin +r._20maisSalMin +r.semRendimento) ? -1: 1;
 }
-
+//*********************************************************************************************************************************************
+void string_beleza(char * s, size_t size){
+	register unsigned short i;
+	for(i=0; i<size; i++){
+		*(s+i)= ' ';
+	}
+}
 //*********************************************************************************************************************************************
 int test_int(const char *s){
 	int d, r=0;
@@ -267,6 +279,7 @@ int Escrever_arq(const char *nome_arquivo, const char *T_arq, const void *nome_s
 		exit(1);
 	}else if((retorno =fwrite(nome_struct,tipo_struct, quant ,arq_alunos))!=quant){
 			fprintf(stderr, "Falha ao gravar arquivo!\n\n", 198, 161);
+			fclose(arq_alunos);
 			return quant - retorno;
 	}
 	fclose(arq_alunos);
