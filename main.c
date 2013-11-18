@@ -1,5 +1,5 @@
 
-#include "biblioteca_dados.c"
+#include "Biblioteca_dados.c"
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------*/
 /* Prototipos*/
@@ -10,11 +10,11 @@ Cidade* cadastro();
 Cidade* cadastro(){
 	Cidade* c=(Cidade*) malloc(sizeof(Cidade));
 	//printf("\n");
-	printf("Rendimento o nome da cidade:\n");
+	printf("Nome da cidade:\n");
 	do{
 		gets(c->nome);
 	}while(c->nome[0]=='\0');
-	printf("Rendimento o estado:\n");
+	printf("Estado:\n");
 	do{
 		gets(c->estado);
 	}while(c->estado[0]=='\0');
@@ -49,7 +49,7 @@ int main(){
 		limpa();
 		switch(i){
 			case 1:
-				Escrever_arq("cidades.DAT", "w+", cadastro(), sizeof(Cidade), 1);
+				Escrever_arq(arqData, "a+", cadastro(), sizeof(Cidade), 1);
 		}
 		getchar();
 	}while(i!=7);

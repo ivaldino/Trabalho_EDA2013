@@ -2,35 +2,31 @@
 #include<stdlib.h>
 #include<string.h>
 
-/**********************************************************************************************************************************************
-void cabecalho(){//Imprime da tela os Cidade do A_luno
 
-	 printf("\n%c%s\n", 201, linha_l);
-     printf("%c Desenvolvedor: ELISEU EGEWARTH\n", 186);
-     printf("%c Matr%ccula: 12/0029693\n", 186,161);
-     printf("%c Disciplina: ICC - Introdu%c%co %c Ci%cncia da Computa%c%co \n",186,135,198,133,136,135,198);
-     printf("%c Turma: AA \n%c%s\n", 186, 200,linha_l);
-}*/
+/******************************************************************************************************************************************/
+//constanstes , defines e prepocessadores (excepting includes)
+#define arqData "cidades.DAT"
+
+const char estados[][3]={
+			"AC","AL","AP","AM","BA","CE","DF","ES","GO",
+			"MA","MT","MS","MG","PA","PB","PR","PE","PI",
+			"RJ","RN","RS","RO","RR","SC","SP","SE","TO"};
+#ifndef stricmp
+	#define stricmp strcasecmp
+#endif
+
+/******************************************************************************************************************************************/
 /*MANUAL PARA FUNÇÕES:*/
 	/*->>ano_int(char *t):
 		Recebe uma string e retorna um inteiro no formato (AAAA).
 		Ex: recebe a string "2013" e retorna o valor ((int) 2013).
 		*/
-	/*->>desempenho_P(int num, Cidade * nome_struct,int p, float *Media_Turma, float *Maior_nota, float *Menor_nota):
-		Recebe num que indica quantas posições (do vetor do tipo Cidade nome_struct) devem ser lidas.
-		Recebe p que indica qual posição do vetor nota[](situado em nome_struct) deve ser lida.
-		Retorna num caso tudo funcione e retorna 0 caso falhe.
-		*/
-	/*->>desempenho(int num, Cidade * nome_struct, float *Media_Turma, float *Maior_nota, float *Menor_nota):
-		Recebe num que indica quantas posições (do vetor do tipo Cidade nome_struct) devem ser lidas.
-		Retorna num caso tudo funcione e retorna 0 caso falhe.*/
-	/*->>Escrever_arq(char *nome_arquivo, char *T_arq, void *nome_struct,int tipo_struct, int quant):
-		Recebe quant que indica quantas posições (do vetor do tipo Cidade nome_struct) devem ser escritas no arquivo.
+	/*->>Escrever_arq(char *nome_arquivo, char *T_arq, void *nome_struct,int tipo_struct):
 		Recebe a string nome_arquivo que indicará o nome do arquivo de texto que será aberto(ou criado).
 		Recebe a string T_arq que indicará o modo como o arquivo será aberto.
 		Retorna o numero de Cidade gravados no arquivo(posições de nome_struct).
 		*/
-	/*->>Ler_arq(char *nome_arquivo, char *T_arq, void *nome_struct,int tipo_struct):
+	/*->>Ler_arq(char *nome_arquivo, char *T_arq, void *nome_struct):
 		Recebe a string nome_arquivo que indicará o nome do arquivo de texto que será aberto e lido.
 		Recebe a string T_arq que indicará o modo como o arquivo será aberto.
 		Os Cidade lidos no arquivo serão armazenados no vetor nome_struct, que é do tipo Cidade.
@@ -41,7 +37,7 @@ void cabecalho(){//Imprime da tela os Cidade do A_luno
 		Retorna a posição da ocorrencia da string.
 		Caso não encontre nenhuma ocorrecia, retorna -1.
 		*/
-	/*->>localiza_M(int d, Cidade *nome_struct, char *s):
+	/*->>localiza_N(int d, Cidade *nome_struct, char *s):
 		Verifica a ocorrencia do nome armazenado na string s nas primeiras d posições do vetor nome_struct.
 		Retorna a posição da ocorrencia da string.
 		Caso não encontre nenhuma ocorrecia, retorna -1.
@@ -87,11 +83,6 @@ void cabecalho(){//Imprime da tela os Cidade do A_luno
 	*/
 //*********************************************************************************************************************************************
 
-#define DIMM 5
-#define L_N 140
-#define MAX 100
-#define NOW 2013
-
 //------------------------------------------------------------------------------------------------------------------------------------------------
 typedef struct _rendimento{
 	/* Estrutura de Cidade que define o rendimento da cidade.*/
@@ -108,9 +99,8 @@ typedef struct _rendimento{
 
 typedef struct _cidade{
 	/* Estrutura de Cidade que define uma cidade.*/
-	char nome[50]; 
-	/* ponteiro p/ char onde será armazenado o nome da cidade. //Alocar dinamicamente o tamanho da string\\ Verificar se ñ comprometerá leitura em arquivo*/
-	char estado[3];/*String de 2 caracteres(+'\0') que Armazena sigla do Estado*/
+	char nome[50];
+	char uf[3];/*String de 2 caracteres(+'\0') que Armazena sigla do Estado*/
 	Rendimento rende;//Variável do rendimento;
 }Cidade;
 
@@ -119,13 +109,13 @@ typedef struct _arvore{
 	//struct _arvore* pai;
 	struct _arvore* esq;
 	struct _arvore* dir;
-}Arvore;
+}Tree;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------
 //protótipos de funções.
 	int ano_int(const char*);
-	int Escrever_arq(const char*,const char*,const void*,const int,int);
-	int Ler_arq(char*, char*, void*,int);
+	int Escrever_arq(const char *T_arq, const void *cidade, const int tipo_struct);
+	int Ler_arq(char *T_arq,Tree** raiz);
 	int localiza_M(int,const Cidade*,char*);
 	int localiza_N(int,const Cidade*,char*);
 	int test_char(const char*);
@@ -135,14 +125,120 @@ typedef struct _arvore{
 	void lista(int,const Cidade*);
 	void procura(int,Cidade*);
 	int valida_Rendimento(Rendimento r);
+	int ordenar_struct(int num, Cidade *nome_struct);
+	void Ordenar(int num, Cidade *nome_struct);
+	void inserir(Tree ** noh, Cidade *reg);
+	unsigned short maiorNoh(register unsigned short esq, register unsigned short dir);
+	void mostrarUm(Tree * noh);
+	void pre_ordem(Tree * noh);
+	void in_ordem(Tree * noh);
+	void pos_ordem(Tree * noh);
+	unsigned short profundidade(Tree * noh);
+	unsigned int contar_folhas(Tree * noh);
+	void mostrar_folhas(Tree * noh);
+	void aponta(Tree * noh, int idFunction);
 
-//------------------------------------------------------------------------------------------------------------------------------------------------
-enum{
-	P1=0, P2, P3, trabalho=3
-};
+//******************************************************************************************************************************************
 
-//*********************************************************************************************************************************************
+void aponta(Tree * noh, register const int idFunction){
+	switch(idFunction){
+		case 1://mostrarUm();
+			mostrarUm(noh);
+			break;
+		case 2:
+			Escrever_arq("a+b", noh, sizeof(Cidade));
+			break;
+	}
+}
 
+
+void mostrar_folhas(Tree * noh){
+	if(noh==NULL) return;
+	if(noh->esq==NULL && noh->dir==NULL){
+		return mostrarUm(noh);
+	}else {
+		if(noh->esq!=NULL){
+			mostrar_folhas(noh->esq);
+		}
+		if(noh->dir!=NULL){
+			mostrar_folhas(noh->dir);
+		}
+	}
+}
+
+unsigned int contar_folhas(Tree * noh){
+	if(noh==NULL) return 0;
+	if(noh->esq==NULL && noh->dir==NULL){
+		return 1;
+	}else {
+		return ((noh->esq==NULL)?0:contar_folhas(noh->esq)) + ((noh->dir==NULL)?0:contar_folhas(noh->dir));
+	}
+	
+}
+
+unsigned short profundidade(Tree * noh){
+	if(noh==NULL){
+		return 0;
+	}else{
+		register short esquerda;
+		register short direita;
+		esquerda = 1+ profundidade(noh->esq);
+		direita = 1+ profundidade(noh->dir);
+			
+		return (esquerda>direita) ? esquerda : direita;
+	}
+}
+
+void pre_ordem(Tree * noh){
+
+	if(noh==NULL) return;
+	mostrarUm(noh);
+	if(noh->esq!=NULL) pre_ordem(noh->esq);
+	if(noh->dir!=NULL) pre_ordem(noh->dir);
+}
+
+void in_ordem(Tree * noh){
+
+	if(noh==NULL) return;
+	in_ordem(noh->esq);
+	mostrarUm(noh);
+	in_ordem(noh->dir);
+	return;
+}
+
+void pos_ordem(Tree * noh){
+
+	if(noh==NULL) return;
+	if(noh->esq!=NULL) pos_ordem(noh->esq);
+	if(noh->dir!=NULL) pos_ordem(noh->dir);
+	mostrarUm(noh);
+}
+
+void mostrarUm(register Tree * noh){
+	printf("%s\n",((*noh)).cidade->nome);
+	printf("%s\n",((*noh)).cidade->uf);
+	//printf("%s\n",(((*noh)).cidade->nome , ((*noh)).cidade->rend.);
+	
+}
+
+void inserir(Tree ** noh, Cidade *reg){
+	if(noh==NULL) return;
+	else if(*noh==NULL){
+		*noh=(Tree *) malloc(sizeof(Tree));
+		(*noh)->cidade=(Cidade *) malloc(sizeof(Cidade));
+		*(*noh)->cidade=*reg;
+		return;
+	}else if(stricmp((*reg).nome ,(**noh).cidade->nome)>0){
+		inserir(&(*noh)->dir, reg);
+	}else if(stricmp((*reg).nome ,(**noh).cidade->nome)<0){
+		inserir(&(*noh)->esq, reg);
+	}else if(stricmp((*reg).nome ,(**noh).cidade->nome)==0){
+		if(stricmp((*reg).nome ,(**noh).cidade->nome)>0){
+			inserir(&(*noh)->dir, reg);
+		}
+	}
+}
+/******************************************************************************************************************************************/
 void limpa(){
 	system("clear || cls");
 }
@@ -166,19 +262,19 @@ void fecha_caixa(int i){
 	}
 	else putchar('\n');
 }
-//*********************************************************************************************************************************************
+//******************************************************************************************************************************************
 int valida_Rendimento(Rendimento r){
 	return (r.total!= r._1SalMin +r._1a2SalMin +r._2a3SalMin +r._3a5SalMin 
 		+r._5a10SalMin +r._10a20SalMin +r._20maisSalMin +r.semRendimento) ? -1: 1;
 }
-//*********************************************************************************************************************************************
+//******************************************************************************************************************************************
 void string_beleza(char * s, size_t size){
 	register unsigned short i;
 	for(i=0; i<size; i++){
 		*(s+i)= ' ';
 	}
 }
-//*********************************************************************************************************************************************
+//******************************************************************************************************************************************
 int test_int(const char *s){
 	int d, r=0;
 	int c=strlen(s);
@@ -190,7 +286,7 @@ int test_int(const char *s){
 	}
 	return r;
 }
-//*********************************************************************************************************************************************
+//******************************************************************************************************************************************
 int test_char(const char *s){
     
     int d, r=0;
@@ -203,7 +299,7 @@ int test_char(const char *s){
 					if(*s!= ' '){
 						if(*s!= (char) (-58)){
 							if(*s!= (char) (-121)){
-								printf("%c Caracter invalido\n", *s);
+								printf("\n%c Caracter invalido\n", *s);
 								r++;
 							}
 						}
@@ -214,49 +310,19 @@ int test_char(const char *s){
 	}
     return r;
 }
-//*********************************************************************************************************************************************
-int test_sexo(char *s){
-	int r=0;
+//**********************************************************************************************************************
+
+int localiza_N(int d, const Cidade *nome_struct, char *s){
+	register int i;
 	
-	if(*s=='f' || *s=='F'){
-		strcpy(s, "Feminino ");
-		*(s+9)= (char) 12;
-		*(s+10)='\0';
-		r++;
+	for(i=0;i<d; i++){
+		if(stricmp(nome_struct[i].nome,s)==0){
+			return i;
+		}
 	}
-	if(*s=='m' || *s=='M'){
-		strcpy(s, "Masculino ");
-		*(s+10)= (char) 11;
-		*(s+11)='\0';
-		r++;
-	}
-	return r;
+	return -1;
 }
-//*********************************************************************************************************************************************
-int ordenar_struct(int num, Cidade *nome_struct){
-	
-	Cidade tmp;
-	if(strcmp(nome_struct[num].nome,nome_struct[num+1].nome)>0){
-		tmp=nome_struct[num];
-		nome_struct[num]=nome_struct[num+1];
-		nome_struct[num+1]=tmp;
-		return 1;
-	}
-	else{
-		return 0;
-	}
-}
-//*********************************************************************************************************************************************
-void Ordenar(int num, Cidade *nome_struct){
-	int i,y=0;
-	if(num-1==0)return;
-	for(i=0, y=0;i<num-1;i++){
-		y+=ordenar_struct(i,nome_struct);
-	}
-	if(y==0)return;
-	else Ordenar(num,nome_struct);
-}
-//*********************************************************************************************************************************************
+//**********************************************************************************************************************
 int ano_int(const char *t){
 	if(*t=='\0'){
 		return 0;
@@ -267,59 +333,54 @@ int ano_int(const char *t){
 	    return (m+(ano_int(t+1)/10));
 	}
 }
-//*********************************************************************************************************************************************
-int Escrever_arq(const char *nome_arquivo, const char *T_arq, const void *nome_struct, const int tipo_struct, int quant){
+//**********************************************************************************************************************
+/**
+	Manipulação de arquivos:
+	long ftell(FILE*); //retorna a posicao corrente onde vc esta no arquivo. (posicionamento por bytes)
+	void rewind(FILE*);//retorna à posicao inicial do arquivo(SEEK_SET).
+	int fseek(FILE*, long salto, int origin); //origin: (SEEK_SET=0, SEEK_CUR=1, SEEK_END=2)
+	SEEK_SET=0; //indica o inicio do arquivo.
+	SEEK_CUR=1; //indica a posicao corrente do arquivo.
+	SEEK_END=2; //indica o final do arquivo.
+*/
+//**********************************************************************************************************************
+int Escrever_arq(const char *T_arq, const void *cidade, const int tipo_struct){
 	int retorno=0;
 	
 	FILE *arq_alunos; 
 	
-	if((arq_alunos=fopen(nome_arquivo, T_arq))==NULL){
+	if((arq_alunos=fopen(arqData, T_arq))==NULL){
 		fprintf(stderr, "N%co foi poss%cvel abrir o arquivo!\n\n", 198, 161);
 		getchar();
 		exit(1);
-	}else if((retorno =fwrite(nome_struct,tipo_struct, quant ,arq_alunos))!=quant){
+	}else if((retorno =fwrite(cidade,tipo_struct, 1 ,arq_alunos))!=1){
 			fprintf(stderr, "Falha ao gravar arquivo!\n\n", 198, 161);
 			fclose(arq_alunos);
-			return quant - retorno;
 	}
 	fclose(arq_alunos);
 	return retorno;
 }
-//*********************************************************************************************************************************************
-int Ler_arq(char *nome_arquivo, char *T_arq,void *nome_struct, int tipo_struct){
+//**********************************************************************************************************************
+int Ler_arq(char *T_arq,Tree** raiz){
 	int retorno=0;
-			
-	FILE *arq_alunos;
-	
-	if((arq_alunos=fopen(nome_arquivo,T_arq))==NULL){
-		
+	int i=0;
+	printf("%d\n", i++);
+	FILE *arq_city;
+	printf("%d\n", i++);
+	if((arq_city=fopen(arqData,T_arq))==NULL){
+		printf("%d\n", i++);	
 	}else{
-		if((retorno=fread(nome_struct, tipo_struct,MAX,arq_alunos))!=MAX){
-			
+		printf("%d\n", i++);
+		Cidade cidade;
+		rewind(arq_city);
+		while(fread(&cidade, sizeof(Cidade),1,arq_city)){
+		printf("%d\n", i++);
+			inserir(raiz, &cidade);
+			printf("%d\n", i++);
+			retorno++;
 		}
 	}
-	fclose(arq_alunos);
+	fclose(arq_city);
 	return retorno;
-}
-//*********************************************************************************************************************************************
-void excluir_s(int p,int y, Cidade *nome_struct){
-	register int i;
-	
-	for(i=p;i<y;i++){
-		//A atribuição "nome_struct[i]=nome_struct[i+1]" é valida, pois é possivel fazer atribuições de estruturas do mesmo tipo.
-		nome_struct[i]=nome_struct[i+1];
-	}
-		
-}
-//*********************************************************************************************************************************************
-int localiza_N(int d, const Cidade *nome_struct, char *s){
-	register int i;
-	
-	for(i=0;i<d; i++){
-		if(stricmp(nome_struct[i].nome,s)==0){
-			return i;
-		}
-	}
-	return -1;
 }
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
